@@ -11,7 +11,7 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return const Scaffold(
-
+      //body: ColumnnContainer(), // L'espace dans lequel sera placé mes cartes
       backgroundColor: Color.fromRGBO(25,25,25,1), // Couleur du Background
     );
   }

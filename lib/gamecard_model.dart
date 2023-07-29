@@ -66,7 +66,7 @@ class GameCardModel {
     outcome: _parseOutcome(json["outcome"]),
     gameType: _parseGameType(json["game_type"]),
     character: _parseCharacter(json["character"]),
-    kda: List<int>.from(json["kda"].map((x) => x)),
+    kda: List<int>.from(json["kda"].map((x) => x)), // Convert JSON array to List<int>
     role: _parseRole(json["role"]),
     comment: json["comment"],
   );

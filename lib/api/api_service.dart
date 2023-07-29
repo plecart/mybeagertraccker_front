@@ -10,9 +10,9 @@ class ApiService {
     try {
 
       var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.getAllCards);
-      print(url);
+      print("Request URL: $url");
       var response = await http.get(url);
-      print(response);
+      print(response.body);
 
       if (response.statusCode == 200) {
         List<GameCardModel> _model = gameCardModelFromJson(response.body);

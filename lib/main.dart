@@ -219,6 +219,7 @@ class _HomeState extends State<Home> {
                   return;
                 }
 
+
                 if (indexOldCard != -1) {
                   _gameCardModel[indexOldCard].gameType =
                       GameCardSwicth.stringToGameType(gameTypeController.text);
@@ -260,6 +261,27 @@ class _HomeState extends State<Home> {
                 }
                 Navigator.pop(context);
 
+                ret = isWashedUp(newGameCard, _gameCardModel, indexOldCard);
+                if (ret != "") {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text('Validation Error'),
+                        content: Text(ret),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text('OK'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                  return;
+                }
               },
               child: Text('Sauvegarder'),
             ),
@@ -280,6 +302,7 @@ class _HomeState extends State<Home> {
       setState(() {
         _gameCardModel = apiGameCardModel;
       });
+      setState(() {});
     }
   }
 

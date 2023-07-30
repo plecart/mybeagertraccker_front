@@ -3,6 +3,8 @@ import './gamecard_model.dart';
 import './api/api_service.dart';
 import './widgets/gamecard_item.dart';
 import './utils/gamecarditem_switch.dart';
+import './utils/convertdate.dart';
+import 'package:intl/intl.dart';
 
 void main() => runApp( const MaterialApp(
     home: Home() //Widget Principal contenant toute mon appli'
@@ -28,20 +30,34 @@ class _HomeState extends State<Home> {
   void _updateGameCard(int indexOldCard) {
 
     List<String> gameTypeStringTab = GameCardSwicth.getGameTypesTabString();
-    //Outcome
-    //date
+    List<String> OutcomeStringTab = GameCardSwicth.getOutcomesTabString();
+    List<String> CharactersStringTab = GameCardSwicth.getCharactersTabString();
+    List<String> RoleStringTab = GameCardSwicth.getRolesTabString();
+
+    TextEditingController outcomeController = TextEditingController();
+    TextEditingController dateController = TextEditingController();
+    TextEditingController characterController = TextEditingController();
     TextEditingController gameTypeController = TextEditingController();
-    //character
+    TextEditingController roleController = TextEditingController();
+    TextEditingController kdaKillController = TextEditingController();
+    TextEditingController kdaDeathController = TextEditingController();
+    TextEditingController kdaAssistController = TextEditingController();
+
     //kda
-    //role
     TextEditingController commentController = TextEditingController();
 
-    // Ajoutez plus de contrôleurs pour les autres champs du formulaire...
 
     // Pré-remplit les champs avec les informations existantes
     GameCardModel gameCard = _gameCardModel[indexOldCard];
+    outcomeController.text = GameCardSwicth.outcomeToString(gameCard.outcome);
     gameTypeController.text = GameCardSwicth.gameTypeToString(gameCard.gameType);
     commentController.text = gameCard.comment;
+    dateController.text = convertDate(gameCard.date);
+    characterController.text = GameCardSwicth.characterToString(gameCard.character);
+    roleController.text = GameCardSwicth.roleToString(gameCard.role);
+    kdaKillController.text = gameCard.kda[0].toString();
+    kdaDeathController.text = gameCard.kda[1].toString();
+    kdaAssistController.text = gameCard.kda[2].toString();
 
     showDialog(
       context: context,
@@ -53,26 +69,100 @@ class _HomeState extends State<Home> {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              //Menu deroulant de Outcome
               DropdownButtonFormField<String>(
-              value: gameTypeController.text, // Valeur actuelle du menu déroulant
+                value: outcomeController.text, // Valeur actuelle du menu déroulant
+                items: OutcomeStringTab.map((String type) {
+                  return DropdownMenuItem<String>(value: type, child: Text(type));
+                }).toList(),
+                onChanged: (String? newValue) {
+                  outcomeController.text = newValue!;
+                },
+                decoration: const InputDecoration(labelText: 'Outcome'),
+              ),
 
-            items: gameTypeStringTab.map((String type) {
-              return DropdownMenuItem<String>(
-                value: type,
-                child: Text(type),
-              );
-            }).toList(),
-            onChanged: (String? newValue) {
-              gameTypeController.text = newValue!;
-            },
+              // Pop up pour rentrer la date
+              TextFormField(
+                controller: dateController,
+                decoration: const InputDecoration(labelText: 'Date'),
+                onTap: () async {
+                  DateTime? selectedDate = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(2000),
+                    lastDate: DateTime(2100),
+                  );
+                  if (selectedDate != null) {
+                    dateController.text = selectedDate.toLocal().toString();
+                  }
+                },
+              ),
 
+              //Popup pour selectionner le perso
+              DropdownButtonFormField<String>(
+                value: characterController.text,
+                items: CharactersStringTab.map((String type) {
+                  return DropdownMenuItem<String>(value: type, child: Text(type));
+                }).toList(),
+                onChanged: (String? newValue) {
+                  characterController.text = newValue!;
+                },
+                decoration: const InputDecoration(labelText: 'Character'),
+              ),
 
-            decoration: InputDecoration(labelText: 'Game Type'),
+              //Menu déroulant de Game type
+              DropdownButtonFormField<String>(
+                value: gameTypeController.text, // Valeur actuelle du menu déroulant
+                items: gameTypeStringTab.map((String type) {
+                  return DropdownMenuItem<String>(value: type, child: Text(type));
+                }).toList(),
+              onChanged: (String? newValue) {
+                gameTypeController.text = newValue!;
+              },
+              decoration: const InputDecoration(labelText: 'Game Type'),
+              ),
+
+              //Menu déroulant de Role
+              DropdownButtonFormField<String>(
+                value: roleController.text, // Valeur actuelle du menu déroulant
+                items: RoleStringTab.map((String type) {
+                  return DropdownMenuItem<String>(value: type, child: Text(type));
+                }).toList(),
+                onChanged: (String? newValue) {
+                  roleController.text = newValue!;
+                },
+                decoration: const InputDecoration(labelText: 'Role'),
+              ),
+
+              Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: kdaKillController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(labelText: 'Kills'),
+                    ),
+                  ),
+                  Expanded(
+                    child: TextFormField(
+                      controller: kdaDeathController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(labelText: 'Deaths'),
+                    ),
+                  ),
+                  Expanded(
+                    child: TextFormField(
+                      controller: kdaAssistController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(labelText: 'Assists'),
+                    ),
+                  ),
+                ],
               ),
 
               TextFormField(
                 controller: commentController,
-                decoration: InputDecoration(labelText: 'Comment'),
+                decoration: const InputDecoration(labelText: 'Comment'),
               ),
             ],
           ),
@@ -80,7 +170,14 @@ class _HomeState extends State<Home> {
             TextButton(
               onPressed: () {
                 _gameCardModel[indexOldCard].gameType = GameCardSwicth.stringToGameType(gameTypeController.text);
+                _gameCardModel[indexOldCard].outcome = GameCardSwicth.stringToOutcome(outcomeController.text);
                 _gameCardModel[indexOldCard].comment = commentController.text;
+                _gameCardModel[indexOldCard].date = DateFormat('dd/MM/yyyy').format(DateTime.parse(dateController.text));
+                _gameCardModel[indexOldCard].character = GameCardSwicth.stringToCharacter(characterController.text);
+                _gameCardModel[indexOldCard].role = GameCardSwicth.stringToRole(roleController.text);
+                _gameCardModel[indexOldCard].kda[0] = int.tryParse(kdaKillController.text) ?? 0;
+                _gameCardModel[indexOldCard].kda[1] = int.tryParse(kdaDeathController.text) ?? 0;
+                _gameCardModel[indexOldCard].kda[2] = int.tryParse(kdaAssistController.text) ?? 0;
                 ApiService().updateGameCard(
                     _gameCardModel[indexOldCard].id,
                     _gameCardModel[indexOldCard])

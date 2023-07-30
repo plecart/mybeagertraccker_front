@@ -54,7 +54,7 @@ class GameCardSwicth {
       case GameType.intensification: return 'Intensification';
       case GameType.combatAMortParEquipe: return 'Comabt à mort par équipe';
       case GameType.partiePersonnalisee: return 'Partie Personnalisée';
-      default: return 'Inconnu';
+      default: return 'Partie Personnalisée';
     }
   }
 
@@ -72,16 +72,6 @@ class GameCardSwicth {
     }
   }
 
-  static String roleToString(Role role) {
-    switch (role) {
-      case Role.controleur: return 'Controleur';
-      case Role.duelliste: return 'Duélliste';
-      case Role.sentinelle: return 'Sentinelle';
-      case Role.initiateur: return 'Initiateur';
-      default: return 'Inconnu';
-    }
-  }
-
   static List<String> getGameTypesTabString() {
     return [
       gameTypeToString(GameType.nonClasse),
@@ -94,5 +84,149 @@ class GameCardSwicth {
       gameTypeToString(GameType.partiePersonnalisee),
     ];
   }
+
+  static String outcomeToString(Outcome outcome) {
+    switch (outcome) {
+      case Outcome.victoire: return 'Victoire';
+      case Outcome.defaite: return 'Défaite';
+      case Outcome.egalite: return 'Égalité';
+      case Outcome.annule: return 'Annulé';
+      default: return 'Annulé';
+    }
+  }
+
+  static Outcome stringToOutcome(String outcome) {
+    switch (outcome) {
+      case 'Victoire': return Outcome.victoire;
+      case 'Défaite': return Outcome.defaite;
+      case 'Égalité': return Outcome.egalite;
+      case 'Annulé': return Outcome.annule;
+      default: return Outcome.annule;
+    }
+  }
+
+  static List<String> getOutcomesTabString() {
+    return [
+      outcomeToString(Outcome.victoire),
+      outcomeToString(Outcome.defaite),
+      outcomeToString(Outcome.egalite),
+      outcomeToString(Outcome.annule),
+    ];
+  }
+
+  static String characterToString(Character character) {
+    switch (character) {
+      case Character.astra: return 'Astra';
+      case Character.breach: return 'Breach';
+      case Character.brimstone: return 'Brimstone';
+      case Character.chamber: return 'Chamber';
+      case Character.cypher: return 'Cypher';
+      case Character.deadlock: return 'Deadlock';
+      case Character.fade: return 'Fade';
+      case Character.gekko: return 'Gekko';
+      case Character.harbor: return 'Harbor';
+      case Character.jett: return 'Jett';
+      case Character.kayo: return 'Kay/0';
+      case Character.killjoy: return 'Killjoy';
+      case Character.neon: return 'Neon';
+      case Character.omen: return 'Omen';
+      case Character.pheonix: return 'Pheonix';
+      case Character.raze: return 'Raze';
+      case Character.reyna: return 'Reyna';
+      case Character.sage: return 'Sage';
+      case Character.syke: return 'Syke';
+      case Character.sova: return 'Sova';
+      case Character.viper: return 'Viper';
+      case Character.yoru: return 'Yoru';
+      default: return 'Unknown';
+    }
+  }
+
+  static Character stringToCharacter(String character) {
+    switch (character) {
+      case 'Astra': return Character.astra;
+      case 'Breach': return Character.breach;
+      case 'Brimstone': return Character.brimstone;
+      case 'Chamber': return Character.chamber;
+      case 'Cypher': return Character.cypher;
+      case 'Deadlock': return Character.deadlock;
+      case 'Fade': return Character.fade;
+      case 'Gekko': return Character.gekko;
+      case 'Harbor': return Character.harbor;
+      case 'Jett': return Character.jett;
+      case 'Kay/0': return Character.kayo;
+      case 'Killjoy': return Character.killjoy;
+      case 'Neon': return Character.neon;
+      case 'Omen': return Character.omen;
+      case 'Pheonix': return Character.pheonix;
+      case 'Raze': return Character.raze;
+      case 'Reyna': return Character.reyna;
+      case 'Sage': return Character.sage;
+      case 'Syke': return Character.syke;
+      case 'Sova': return Character.sova;
+      case 'Viper': return Character.viper;
+      case 'Yoru': return Character.yoru;
+      default: return Character.yoru;
+    }
+  }
+
+  static List<String> getCharactersTabString() {
+    return [
+      characterToString(Character.astra),
+      characterToString(Character.breach),
+      characterToString(Character.brimstone),
+      characterToString(Character.chamber),
+      characterToString(Character.cypher),
+      characterToString(Character.deadlock),
+      characterToString(Character.fade),
+      characterToString(Character.gekko),
+      characterToString(Character.harbor),
+      characterToString(Character.jett),
+      characterToString(Character.kayo),
+      characterToString(Character.killjoy),
+      characterToString(Character.neon),
+      characterToString(Character.omen),
+      characterToString(Character.pheonix),
+      characterToString(Character.raze),
+      characterToString(Character.reyna),
+      characterToString(Character.sage),
+      characterToString(Character.syke),
+      characterToString(Character.sova),
+      characterToString(Character.viper),
+      characterToString(Character.yoru),
+    ];
+  }
+
+  static String roleToString(Role role) {
+    switch (role) {
+      case Role.controleur: return 'Contrôleur';
+      case Role.duelliste: return 'Duelliste';
+      case Role.sentinelle: return 'Sentinelle';
+      case Role.initiateur: return 'Initiateur';
+      default: return 'Initiateur';
+    }
+  }
+
+  static Role stringToRole(String role) {
+    switch (role) {
+      case 'Contrôleur': return Role.controleur;
+      case 'Duelliste': return Role.duelliste;
+      case 'Sentinelle': return Role.sentinelle;
+      case 'Initiateur': return Role.initiateur;
+      default: return Role.initiateur;
+    }
+  }
+
+  static List<String> getRolesTabString() {
+    return [
+      roleToString(Role.controleur),
+      roleToString(Role.duelliste),
+      roleToString(Role.sentinelle),
+      roleToString(Role.initiateur),
+    ];
+  }
+
+
+
 
 }

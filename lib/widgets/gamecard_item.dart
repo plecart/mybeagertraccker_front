@@ -14,7 +14,7 @@ class GameCardItem extends StatelessWidget {
     String urlImage = GameCardSwicth.getCharacterUrl(gameCard.character);
     double kdaRatio = (gameCard.kda[0] + gameCard.kda[2]) / gameCard.kda[1];
 
-    print(urlImage);
+
     return Container(
       // Style de la carte container
       margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),

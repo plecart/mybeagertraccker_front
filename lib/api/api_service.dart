@@ -34,25 +34,17 @@ class ApiService {
 
   Future<GameCardModel?> updateGameCard(int id, GameCardModel updatedCard) async {
 
-    //print(updatedCard.toJson());
-
     try {
-
       var url = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.getAllCards}/$id');
-      //print(jsonCardGame);
-
-      var response = await http.put(url, headers: {
-        "Content-Type": "application/json", // Indique que le corps de la requête est en format JSON
-      }, body: json.encode(updatedCard.toJson()));
-    //, headers: { "Content-Type" : "application/json"}
-      print(json.encode(updatedCard.toJson()));
-      print(response.statusCode);
+      var response = await http.put(
+          url,
+          headers: {"Content-Type": "application/json"},
+          body: json.encode(updatedCard.toJson()));
       if (response.statusCode == 200) {
         return updatedCard;
       }
     } catch (e) {
-      print(e.toString());
-    log(e.toString());
+      log(e.toString());
     }
 
     Future<bool> deleteGameCard(int id) async {

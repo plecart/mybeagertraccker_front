@@ -72,4 +72,17 @@ class GameCardSwicth {
     }
   }
 
+  static List<String> getGameTypesTabString() {
+    return [
+      gameTypeToString(GameType.nonClasse),
+      gameTypeToString(GameType.competition),
+      gameTypeToString(GameType.velocite),
+      gameTypeToString(GameType.spikeRush),
+      gameTypeToString(GameType.combatAMort),
+      gameTypeToString(GameType.intensification),
+      gameTypeToString(GameType.combatAMortParEquipe),
+      gameTypeToString(GameType.partiePersonnalisee),
+    ];
+  }
+
 }

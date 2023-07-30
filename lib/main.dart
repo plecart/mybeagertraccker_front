@@ -26,6 +26,8 @@ class _HomeState extends State<Home> {
   }
 
   void _updateGameCard(int indexOldCard) {
+
+    List<String> gameTypeStringTab = GameCardSwicth.getGameTypesTabString();
     //Outcome
     //date
     TextEditingController gameTypeController = TextEditingController();
@@ -41,8 +43,6 @@ class _HomeState extends State<Home> {
     gameTypeController.text = GameCardSwicth.gameTypeToString(gameCard.gameType);
     commentController.text = gameCard.comment;
 
-    print(gameTypeController);
-
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -53,10 +53,23 @@ class _HomeState extends State<Home> {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              TextFormField(
-                controller: gameTypeController,
-                decoration: InputDecoration(labelText: 'Game Type'),
+              DropdownButtonFormField<String>(
+              value: gameTypeController.text, // Valeur actuelle du menu déroulant
+
+            items: gameTypeStringTab.map((String type) {
+              return DropdownMenuItem<String>(
+                value: type,
+                child: Text(type),
+              );
+            }).toList(),
+            onChanged: (String? newValue) {
+              gameTypeController.text = newValue!;
+            },
+
+
+            decoration: InputDecoration(labelText: 'Game Type'),
               ),
+
               TextFormField(
                 controller: commentController,
                 decoration: InputDecoration(labelText: 'Comment'),
@@ -72,7 +85,6 @@ class _HomeState extends State<Home> {
                     _gameCardModel[indexOldCard].id,
                     _gameCardModel[indexOldCard])
                     .then((changedGameCard) {
-
                   if (changedGameCard != null) {
                     setState(() {});
                   }

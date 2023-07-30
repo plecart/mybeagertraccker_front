@@ -5,6 +5,7 @@ import './widgets/gamecard_item.dart';
 import './utils/gamecarditem_switch.dart';
 import './utils/convertdate.dart';
 import 'package:intl/intl.dart';
+import './utils/validateInputs.dart';
 
 void main() => runApp( const MaterialApp(
     home: Home() //Widget Principal contenant toute mon appli'
@@ -180,6 +181,44 @@ class _HomeState extends State<Home> {
             TextButton(
 
               onPressed: () {
+                GameCardModel newGameCard = GameCardModel(
+                  id: 0, // sera changé par le serverur
+                  gameType: GameCardSwicth.stringToGameType(gameTypeController.text),
+                  outcome: GameCardSwicth.stringToOutcome(outcomeController.text),
+                  comment: commentController.text,
+                  date: DateFormat('dd/MM/yyyy').format(DateTime.parse(dateController.text)),
+                  character: GameCardSwicth.stringToCharacter(characterController.text),
+                  role: GameCardSwicth.stringToRole(roleController.text),
+                  kda: [
+                    int.tryParse(kdaKillController.text) ?? 0,
+                    int.tryParse(kdaDeathController.text) ?? 0,
+                    int.tryParse(kdaAssistController.text) ?? 0,
+                  ],
+                );
+
+                String ret = validateInputs(newGameCard, _gameCardModel);
+
+                if (ret != "") {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text('Validation Error'),
+                        content: Text(ret),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text('OK'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                  return;
+                }
+
                 if (indexOldCard != -1) {
                   _gameCardModel[indexOldCard].gameType =
                       GameCardSwicth.stringToGameType(gameTypeController.text);
@@ -200,7 +239,6 @@ class _HomeState extends State<Home> {
                       int.tryParse(kdaDeathController.text) ?? 0;
                   _gameCardModel[indexOldCard].kda[2] =
                       int.tryParse(kdaAssistController.text) ?? 0;
-
                   ApiService().updateGameCard(
                       _gameCardModel[indexOldCard].id,
                       _gameCardModel[indexOldCard])
@@ -210,25 +248,9 @@ class _HomeState extends State<Home> {
                     }
                   });
                 } else {
-                  GameCardModel newGameCard = GameCardModel(
-                    id: 0, // sera changé par le serverur
-                    gameType: GameCardSwicth.stringToGameType(gameTypeController.text),
-                    outcome: GameCardSwicth.stringToOutcome(outcomeController.text),
-                    comment: commentController.text,
-                    date: DateFormat('dd/MM/yyyy').format(DateTime.parse(dateController.text)),
-                    character: GameCardSwicth.stringToCharacter(characterController.text),
-                    role: GameCardSwicth.stringToRole(roleController.text),
-                    kda: [
-                      int.tryParse(kdaKillController.text) ?? 0,
-                      int.tryParse(kdaDeathController.text) ?? 0,
-                      int.tryParse(kdaAssistController.text) ?? 0,
-                    ],
-                  );
-
                   ApiService().createGameCard(newGameCard).then((createdGameCard) {
                     print(createdGameCard);
                     if (createdGameCard != null) {
-
                       setState(() {
                         _gameCardModel.add(createdGameCard);
                       });

@@ -33,9 +33,9 @@ class ApiService {
   }
 
   Future<GameCardModel?> updateGameCard(int id, GameCardModel updatedCard) async {
-
     try {
-      var url = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.getAllCards}/$id');
+      var url = Uri.parse(
+          '${ApiConstants.baseUrl}${ApiConstants.getAllCards}/$id');
       var response = await http.put(
           url,
           headers: {"Content-Type": "application/json"},
@@ -46,18 +46,21 @@ class ApiService {
     } catch (e) {
       log(e.toString());
     }
+  }
 
-    Future<bool> deleteGameCard(int id) async {
+    Future<GameCardModel?> createGameCard(GameCardModel newCard) async {
+
       try {
-        var url = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.getAllCards}/$id');
-        var response = await http.delete(url);
-        if (response.statusCode == 200) {
-          return true;
+        var url = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.getAllCards}');
+        var response = await http.post(
+            url,
+            headers: {"Content-Type": "application/json"},
+            body: json.encode(newCard.toJson()));
+        if (response.statusCode >= 200) {
+          return newCard;
         }
       } catch (e) {
         log(e.toString());
       }
-      return false;
-    }
   }
 }

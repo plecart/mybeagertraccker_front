@@ -48,7 +48,17 @@ class _HomeState extends State<Home> {
 
 
     // Pré-remplit les champs avec les informations existantes
-    GameCardModel gameCard = _gameCardModel[indexOldCard];
+    GameCardModel gameCard = (indexOldCard != -1) ?
+    _gameCardModel[indexOldCard] : GameCardModel(
+      id: 0, // sera changé par le serverur
+      gameType: GameType.competition,
+      outcome: Outcome.annule,
+      comment: "Commentaire",
+      date: DateFormat('dd/MM/yyyy').format(DateTime.now()),
+      character: Character.kayo,
+      role: Role.initiateur,
+      kda: [0, 0, 0]
+    );
     outcomeController.text = GameCardSwicth.outcomeToString(gameCard.outcome);
     gameTypeController.text = GameCardSwicth.gameTypeToString(gameCard.gameType);
     commentController.text = gameCard.comment;
@@ -64,7 +74,7 @@ class _HomeState extends State<Home> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(
-            indexOldCard != 0 ? 'Modifier ma partie' : 'Créer une partie',
+            indexOldCard != -1 ? 'Modifier ma partie' : 'Créer une partie',
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -168,25 +178,66 @@ class _HomeState extends State<Home> {
           ),
           actions: [
             TextButton(
+
               onPressed: () {
-                _gameCardModel[indexOldCard].gameType = GameCardSwicth.stringToGameType(gameTypeController.text);
-                _gameCardModel[indexOldCard].outcome = GameCardSwicth.stringToOutcome(outcomeController.text);
-                _gameCardModel[indexOldCard].comment = commentController.text;
-                _gameCardModel[indexOldCard].date = DateFormat('dd/MM/yyyy').format(DateTime.parse(dateController.text));
-                _gameCardModel[indexOldCard].character = GameCardSwicth.stringToCharacter(characterController.text);
-                _gameCardModel[indexOldCard].role = GameCardSwicth.stringToRole(roleController.text);
-                _gameCardModel[indexOldCard].kda[0] = int.tryParse(kdaKillController.text) ?? 0;
-                _gameCardModel[indexOldCard].kda[1] = int.tryParse(kdaDeathController.text) ?? 0;
-                _gameCardModel[indexOldCard].kda[2] = int.tryParse(kdaAssistController.text) ?? 0;
-                ApiService().updateGameCard(
-                    _gameCardModel[indexOldCard].id,
-                    _gameCardModel[indexOldCard])
-                    .then((changedGameCard) {
-                  if (changedGameCard != null) {
-                    setState(() {});
-                  }
-                });
+                if (indexOldCard != -1) {
+                  _gameCardModel[indexOldCard].gameType =
+                      GameCardSwicth.stringToGameType(gameTypeController.text);
+                  _gameCardModel[indexOldCard].outcome =
+                      GameCardSwicth.stringToOutcome(outcomeController.text);
+                  _gameCardModel[indexOldCard].comment = commentController.text;
+                  _gameCardModel[indexOldCard].date =
+                      DateFormat('dd/MM/yyyy').format(
+                          DateTime.parse(dateController.text));
+                  _gameCardModel[indexOldCard].character =
+                      GameCardSwicth.stringToCharacter(
+                          characterController.text);
+                  _gameCardModel[indexOldCard].role =
+                      GameCardSwicth.stringToRole(roleController.text);
+                  _gameCardModel[indexOldCard].kda[0] =
+                      int.tryParse(kdaKillController.text) ?? 0;
+                  _gameCardModel[indexOldCard].kda[1] =
+                      int.tryParse(kdaDeathController.text) ?? 0;
+                  _gameCardModel[indexOldCard].kda[2] =
+                      int.tryParse(kdaAssistController.text) ?? 0;
+
+                  ApiService().updateGameCard(
+                      _gameCardModel[indexOldCard].id,
+                      _gameCardModel[indexOldCard])
+                      .then((changedGameCard) {
+                    if (changedGameCard != null) {
+                      setState(() {});
+                    }
+                  });
+                } else {
+                  GameCardModel newGameCard = GameCardModel(
+                    id: 0, // sera changé par le serverur
+                    gameType: GameCardSwicth.stringToGameType(gameTypeController.text),
+                    outcome: GameCardSwicth.stringToOutcome(outcomeController.text),
+                    comment: commentController.text,
+                    date: DateFormat('dd/MM/yyyy').format(DateTime.parse(dateController.text)),
+                    character: GameCardSwicth.stringToCharacter(characterController.text),
+                    role: GameCardSwicth.stringToRole(roleController.text),
+                    kda: [
+                      int.tryParse(kdaKillController.text) ?? 0,
+                      int.tryParse(kdaDeathController.text) ?? 0,
+                      int.tryParse(kdaAssistController.text) ?? 0,
+                    ],
+                  );
+
+                  ApiService().createGameCard(newGameCard).then((createdGameCard) {
+                    print(createdGameCard);
+                    if (createdGameCard != null) {
+
+                      setState(() {
+                        _gameCardModel.add(createdGameCard);
+                      });
+                      setState(() {});
+                    }
+                  });
+                }
                 Navigator.pop(context);
+
               },
               child: Text('Sauvegarder'),
             ),
@@ -279,7 +330,7 @@ class _HomeState extends State<Home> {
 
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          //_updateGameCard(0);
+          _updateGameCard(-1);
         },
         child: Icon(Icons.add),
         backgroundColor: Colors.green, // Change the background color of the button

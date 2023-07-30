@@ -12,6 +12,7 @@ class GameCardItem extends StatelessWidget {
 
     Color cardColor = GameCardSwicth.getOutcomeColor(gameCard.outcome);
     String urlImage = GameCardSwicth.getCharacterUrl(gameCard.character);
+    double kdaRatio = (gameCard.kda[0] + gameCard.kda[2]) / gameCard.kda[1];
 
     print(urlImage);
     return Container(
@@ -23,7 +24,7 @@ class GameCardItem extends StatelessWidget {
       ),
       padding: EdgeInsets.all(8.0),
 
-      // Row pour placer tout les éléments dedans
+      // Row pour placer tout les éléments de ma gamededans
       child: Row(
         children: [
           // Container de mon image character
@@ -37,12 +38,32 @@ class GameCardItem extends StatelessWidget {
             child: Image.network(urlImage),
           ),
 
-
-
           Expanded(
-            child: ListTile(
-              title: Text('ID: ${gameCard.id}'),
-              subtitle: Text('COMMENT: ${gameCard.comment}'),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Game Type: ${GameCardSwicth.gameTypeToString(gameCard.gameType)}',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 4.0),
+                  Text('Date: ${gameCard.date.toString()}'),
+                  SizedBox(height: 4.0),
+                  Row(
+                    children: [
+                      Text('KDA: ${gameCard.kda[0]} / ${gameCard.kda[1]} / ${gameCard.kda[2]}'),
+                      SizedBox(width: 4.0),
+                      Text(' - KDA Ratio: ${kdaRatio.toStringAsFixed(2)}' )
+                    ],
+                  ),
+                  SizedBox(height: 4.0),
+                  Text('Role: ${GameCardSwicth.roleToString(gameCard.role)}'),
+                  SizedBox(height: 4.0),
+                  Text('Comment: ${gameCard.comment}'),
+                ],
+              ),
             ),
           ),
         ],

@@ -72,6 +72,16 @@ class GameCardSwicth {
     }
   }
 
+  static String roleToString(Role role) {
+    switch (role) {
+      case Role.controleur: return 'Controleur';
+      case Role.duelliste: return 'Duélliste';
+      case Role.sentinelle: return 'Sentinelle';
+      case Role.initiateur: return 'Initiateur';
+      default: return 'Inconnu';
+    }
+  }
+
   static List<String> getGameTypesTabString() {
     return [
       gameTypeToString(GameType.nonClasse),

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import './utils/gamecarditem_switch.dart';
 
 List<GameCardModel> gameCardModelFromJson(String str) =>
     List<GameCardModel>.from(json.decode(str).map((x) => GameCardModel.fromJson(x)));
@@ -12,7 +13,7 @@ enum Outcome {
 
 enum GameType {
   nonClasse, competition, velocite, spikeRush, combatAMort,
-  intensification, combatAMortPartEquipe, partiePersonnalisee
+  intensification, combatAMortParEquipe, partiePersonnalisee
 }
 
 enum Character {
@@ -25,9 +26,14 @@ enum Role {
   controleur, duelliste, sentinelle, initiateur
 }
 
+String enumToString(dynamic enumValue) {
+  return enumValue.toString().split('.').last;
+}
+
 class GameCardModel {
   int id;
   Outcome outcome;
+  String date; // Devrait être au format Date
   GameType gameType;
   Character character;
   List<int> kda;
@@ -37,6 +43,7 @@ class GameCardModel {
   GameCardModel({
     required this.id,
     required this.outcome,
+    required this.date,
     required this.gameType,
     required this.character,
     required this.kda,
@@ -44,40 +51,40 @@ class GameCardModel {
     required this.comment,
   });
 
-  //Toutes les fonctions qui me permettent de passer de Enum a String
-  String _enumToString(dynamic enumValue) {
-    return enumValue.toString().split('.').last;
-  }
-  static Outcome _parseOutcome(String value) {
+  static Outcome parseOutcome(String value) {
     return Outcome.values.firstWhere((e) => e.toString().split('.').last == value);
   }
-  static GameType _parseGameType(String value) {
+
+  static GameType parseGameType(String value) {
     return GameType.values.firstWhere((e) => e.toString().split('.').last == value);
   }
-  static Character _parseCharacter(String value) {
+
+  static Character parseCharacter(String value) {
     return Character.values.firstWhere((e) => e.toString().split('.').last == value);
   }
-  static Role _parseRole(String value) {
+  static Role parseRole(String value) {
     return Role.values.firstWhere((e) => e.toString().split('.').last == value);
   }
 
   factory GameCardModel.fromJson(Map<String, dynamic> json) => GameCardModel(
     id: json["id"],
-    outcome: _parseOutcome(json["outcome"]),
-    gameType: _parseGameType(json["game_type"]),
-    character: _parseCharacter(json["character"]),
+    outcome: parseOutcome(json["outcome"]),
+    date: json["date"],
+    gameType: parseGameType(json["game_type"]),
+    character: parseCharacter(json["character"]),
     kda: List<int>.from(json["kda"].map((x) => x)), // Convert JSON array to List<int>
-    role: _parseRole(json["role"]),
+    role: parseRole(json["role"]),
     comment: json["comment"],
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
-    "outcome": _enumToString(outcome),
-    "game_type": _enumToString(gameType),
-    "character": _enumToString(character),
+    "outcome": enumToString(outcome),
+    "date": date,
+    "game_type": enumToString(gameType),
+    "character": enumToString(character),
     "kda": kda,
-    "role": _enumToString(role),
+    "role": enumToString(role),
     "comment": comment,
   };
 }

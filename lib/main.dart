@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import './gamecard_model.dart';
 import './api/api_service.dart';
 import './widgets/gamecard_item.dart';
+import './utils/gamecarditem_switch.dart';
 
 void main() => runApp( const MaterialApp(
     home: Home() //Widget Principal contenant toute mon appli'
@@ -22,6 +23,72 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     _getData();
+  }
+
+  void _updateGameCard(int indexOldCard) {
+    //Outcome
+    //date
+    TextEditingController gameTypeController = TextEditingController();
+    //character
+    //kda
+    //role
+    TextEditingController commentController = TextEditingController();
+
+    // Ajoutez plus de contrôleurs pour les autres champs du formulaire...
+
+    // Pré-remplit les champs avec les informations existantes
+    GameCardModel gameCard = _gameCardModel[indexOldCard];
+    gameTypeController.text = GameCardSwicth.gameTypeToString(gameCard.gameType);
+    commentController.text = gameCard.comment;
+
+    print(gameTypeController);
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            indexOldCard != 0 ? 'Modifier ma partie' : 'Créer une partie',
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                controller: gameTypeController,
+                decoration: InputDecoration(labelText: 'Game Type'),
+              ),
+              TextFormField(
+                controller: commentController,
+                decoration: InputDecoration(labelText: 'Comment'),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                _gameCardModel[indexOldCard].gameType = GameCardSwicth.stringToGameType(gameTypeController.text);
+                _gameCardModel[indexOldCard].comment = commentController.text;
+                ApiService().updateGameCard(
+                    _gameCardModel[indexOldCard].id,
+                    _gameCardModel[indexOldCard])
+                    .then((changedGameCard) {
+
+                  if (changedGameCard != null) {
+                    setState(() {});
+                  }
+                });
+                Navigator.pop(context);
+              },
+              child: Text('Sauvegarder'),
+            ),
+            TextButton(
+              onPressed: () { Navigator.pop(context); },
+              child: Text('Annuler'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   // Récupération et stockage dans le stat de mes parties
@@ -86,7 +153,7 @@ class _HomeState extends State<Home> {
                 Column(
                   children: [
                     IconButton(
-                      onPressed: () { },
+                      onPressed: () { _updateGameCard(index); },
                       icon: const Icon(Icons.edit, color: Colors.grey),
                     ),
                     SizedBox(height: 8.0),
@@ -103,8 +170,7 @@ class _HomeState extends State<Home> {
 
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Handle the press of the "+ Nouvelle Partie" button here
-          // You can add the desired functionality to create a new game
+          //_updateGameCard(0);
         },
         child: Icon(Icons.add),
         backgroundColor: Colors.green, // Change the background color of the button

@@ -44,4 +44,32 @@ class GameCardSwicth {
     }
   }
 
+  static String gameTypeToString(GameType gameType) {
+    switch (gameType) {
+      case GameType.nonClasse: return 'Non classé';
+      case GameType.competition: return 'Compétition';
+      case GameType.velocite: return 'Vélocité';
+      case GameType.spikeRush: return 'Spike Rush';
+      case GameType.combatAMort: return 'Combat à mort';
+      case GameType.intensification: return 'Intensification';
+      case GameType.combatAMortParEquipe: return 'Comabt à mort par équipe';
+      case GameType.partiePersonnalisee: return 'Partie Personnalisée';
+      default: return 'Inconnu';
+    }
+  }
+
+  static GameType stringToGameType(String gameType) {
+    switch (gameType) {
+      case 'Non classé' : return GameType.nonClasse;
+      case 'Compétition': return GameType.competition;
+      case 'Vélocité' : return GameType.velocite;
+      case 'Spike Rush' : return GameType.spikeRush;
+      case 'Combat à mort' : return  GameType.combatAMort;
+      case 'Intensification' : return GameType.intensification;
+      case 'Comabt à mort par équipe' : return GameType.combatAMortParEquipe;
+      case 'Partie Personnalisée' : return GameType.partiePersonnalisee;
+      default: return GameType.partiePersonnalisee;
+    }
+  }
+
 }
